@@ -142,9 +142,14 @@ classifier.add(Dense(output_dim = 5, init = 'uniform', activation='softmax'))
 #opt = keras.optimizers.RMSprop(learning_rate=0.001)   
 classifier.compile(optimizer='adam',loss = 'sparse_categorical_crossentropy', metrics=['accuracy'])
 
+#Early Stopping
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=20)
+
+#Checkpoint
+mc = ModelCheckpoint('best_model_1.h5', monitor='val_loss', mode='min', verbose=1, save_best_only=True)
 
 #Fitting the ANN to the training set
-history=classifier.fit(X_train, y_train, validation_data=(X_test, y_test), epochs =100, batch_size = 64)
+history=classifier.fit(X_train, y_train, validation_data=(X_test, y_test), epochs =1000, callbacks=[es,mc])
 
 
 #part3 - Making the predictionbs and evaluating the model
