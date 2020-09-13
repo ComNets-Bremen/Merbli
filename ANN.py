@@ -120,30 +120,31 @@ from keras.constraints import maxnorm
 classifier = Sequential() #No need to put any arguments as we are going to add layers
 
 #Adding the input layer and the first hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu', input_dim = 13)) 
+classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu',kernel_constraint=maxnorm(3), input_dim = 13)) 
+classifier.add(Dropout(0.3))
 
 #Adding the second hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu'))
-
+classifier.add(Dense(output_dim = 9, init = 'uniform',kernel_constraint=maxnorm(3),activation='relu'))
+classifier.add(Dropout(0.2))
 
 #Adding the third hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu'))
-
+classifier.add(Dense(output_dim = 9, init = 'uniform',kernel_constraint=maxnorm(3),activation='relu'))
+classifier.add(Dropout(0.2))
 
 #Adding the fourth hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu'))
-
+classifier.add(Dense(output_dim = 9, init = 'uniform',kernel_constraint=maxnorm(3),activation='relu'))
+classifier.add(Dropout(0.1))
 
 #Adding the output layer
 classifier.add(Dense(output_dim = 5, init = 'uniform', activation='softmax')) 
-
+                              
 #Compiling the ANN
 #opt = SGD(lr=0.01, momentum=0.9,decay=0.0001) 
 #opt = keras.optimizers.RMSprop(learning_rate=0.001)   
 classifier.compile(optimizer='adam',loss = 'sparse_categorical_crossentropy', metrics=['accuracy'])
 
 #Early Stopping
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=20)
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
 
 #Checkpoint
 mc = ModelCheckpoint('best_model_1.h5', monitor='val_loss', mode='min', verbose=1, save_best_only=True)
