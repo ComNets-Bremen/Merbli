@@ -117,7 +117,7 @@ from keras.regularizers import l2
 from keras.constraints import maxnorm
 
 #Initializing ANN
-classifier = Sequential() #No need to put any arguments as we are going to add layers
+classifier = Sequential() 
 
 #Adding the input layer and the first hidden layer
 classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu',kernel_constraint=maxnorm(3), input_dim = 13)) 
