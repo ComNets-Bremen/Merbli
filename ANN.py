@@ -4,10 +4,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from pickle import dump
 from sklearn.metrics import accuracy_score,precision_score, recall_score, classification_report
 
 # Importing the dataset
-dataset = pd.read_csv('data_set.csv')
+dataset = pd.read_csv('Dataset_1.csv')
 df = pd.DataFrame(dataset)
 
 #bins for f_1
@@ -73,7 +74,8 @@ df['f_1_9_bin'] = np.select(conditions_4, choices_4, default='0')
 
 
 #defining input and output
-X = dataset.iloc[:, [1,3,4,9,20,21,22,23,25,26,27,28,29]].values  #SHTM 
+#X = dataset.iloc[:, [1,3,4,9,20,21,22,23,25,26,27,28,29]].values  #Sound,DHT11 and Motion sensors as inputs 
+X = dataset.iloc[:, [1,3,4,20,21,22,23,25,26,27,28,29]].values  #Sound and DHT11 sensors as inputs 
 y = dataset.iloc[:, 24].values
 
 
@@ -92,7 +94,7 @@ from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
-
+dump(sc, open('scaleANN.pkl', 'wb')) #saving the model scaling parameters
 
 #oversampling
 from imblearn.over_sampling import SMOTE
@@ -116,38 +118,31 @@ from keras.optimizers import SGD
 from keras.regularizers import l2
 from keras.constraints import maxnorm
 
-#Initializing ANN
-classifier = Sequential() #No need to put any arguments as we are going to add layers
+classifier = Sequential() 
 
 #Adding the input layer and the first hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',activation='relu',kernel_constraint=maxnorm(3), input_dim = 13)) 
-classifier.add(Dropout(0.3))
+classifier.add(Dense(output_dim = 8, init = 'uniform',activation='relu',bias_regularizer='l2', input_dim = 12))
 
 #Adding the second hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',kernel_constraint=maxnorm(3),activation='relu'))
-classifier.add(Dropout(0.2))
+classifier.add(Dense(output_dim = 8, init = 'uniform',bias_regularizer='l2', activation='relu'))
 
 #Adding the third hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',kernel_constraint=maxnorm(3),activation='relu'))
-classifier.add(Dropout(0.2))
+classifier.add(Dense(output_dim = 8, init = 'uniform',bias_regularizer='l2', activation='relu'))
 
 #Adding the fourth hidden layer
-classifier.add(Dense(output_dim = 9, init = 'uniform',kernel_constraint=maxnorm(3),activation='relu'))
-classifier.add(Dropout(0.1))
+classifier.add(Dense(output_dim = 8, init = 'uniform',bias_regularizer='l2', activation='relu'))
 
 #Adding the output layer
 classifier.add(Dense(output_dim = 5, init = 'uniform', activation='softmax')) 
-                              
-#Compiling the ANN
-#opt = SGD(lr=0.01, momentum=0.9,decay=0.0001) 
-#opt = keras.optimizers.RMSprop(learning_rate=0.001)   
+
+#Compiling the ANN  
 classifier.compile(optimizer='adam',loss = 'sparse_categorical_crossentropy', metrics=['accuracy'])
 
 #Early Stopping
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=50)
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=20)
 
-#Checkpoint
-mc = ModelCheckpoint('best_model_1.h5', monitor='val_loss', mode='min', verbose=1, save_best_only=True)
+#Checkpoint- saving the best model
+mc = ModelCheckpoint('best_model_ANN.h5', monitor='val_loss', mode='min', verbose=1, save_best_only=True)
 
 #Fitting the ANN to the training set
 history=classifier.fit(X_train, y_train, validation_data=(X_test, y_test), epochs =1000, callbacks=[es,mc])
@@ -164,21 +159,27 @@ print('Accuracy score: ' + str(accuracy_score(y_test, y_pred_new)))
 print('Recall score: ' + str(recall_score(y_test, y_pred_new, average='micro')))
 print(classification_report(y_test, y_pred_new))
 
-# Making the Confusion Matrix
+# Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred_new)
 
+#train and test score calculation
 _,train_acc = classifier.evaluate(X_train,y_train)
 _,test_acc= classifier.evaluate(X_test,y_test)
 print('Train: %.3f, Test: %.3f' % (train_acc, test_acc))
 
-'''from keras.models import load_model
-saved_model = load_model('best_model_8.h5')
+
+#train test accuracy calculation of the saved model
+
+from keras.models import load_model
+saved_model = load_model('best_model_ANN.h5')
 
 _,train_acc_1 = saved_model.evaluate(X_train,y_train)
 _,test_acc_1 = saved_model.evaluate(X_test,y_test)
-print('Train: %.3f, Test: %.3f' % (train_acc_1, test_acc_1))'''
+print('Train_best: %.3f, Test_best: %.3f' % (train_acc_1, test_acc_1))
 
+
+#learning curves
 plt.figure()
 plt.subplot(211)
 plt.plot(history.history['accuracy'], label='train')
@@ -194,18 +195,8 @@ plt.legend(bbox_to_anchor=(1.15,1),loc="upper right", fontsize ='small')
 plt.title('Loss')
 plt.show()
 
-#k-fold cross validation
-#from sklearn.model_selection import cross_val_score
-#accuracies = cross_val_score(estimator = classifier, X = X_train, y= y_train, scoring = "hamming", cv = 10) #cv parameter is the number of folds we need to splitt the data
-#accuracies.mean()
-#accuracies.std()
 
-'''from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import KFold
-estimator = history(epochs=200, batch_size=64, verbose=0)
-kfold = KFold(n_splits=10, shuffle=True)
-results = cross_val_score(estimator, X, y, cv=kfold)
-print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))'''
+
 
  
 
