@@ -133,8 +133,7 @@ classifier = RandomForestClassifier(n_estimators = 200, criterion = 'entropy',ma
 
 #KSVM
 #from sklearn.svm import SVC
-#classifier = SVC(C= 100, kernel = 'rbf', random_state = 0) #penalty parameter of the error term in SVC which is a regularization term to prevent overfitting, Default was 1. higher the value higher the prevention from overfitting but if it's too high we go for under fitting
-
+#classifier = SVC(C= 100, kernel = 'rbf', random_state = 0) 
 
 #Naive Bayes
 #from sklearn.naive_bayes import GaussianNB
