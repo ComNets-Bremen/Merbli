@@ -133,7 +133,7 @@ classifier = RandomForestClassifier(n_estimators = 200, criterion = 'entropy',ma
 
 #KSVM
 #from sklearn.svm import SVC
-#classifier = SVC(C= 100, kernel = 'rbf', random_state = 0) #penalty parameter of the error term in SVC which is a regularization term to prevent overfitting, Default was 1. higher the value higher the prevention from overfitting but if it's too high we go for under fitting
+#classifier = SVC(C= 100, kernel = 'rbf', random_state = 0) 
 
 
 #Naive Bayes
@@ -161,7 +161,7 @@ cm = confusion_matrix(y_test, y_pred)
 
 #Applying k-fold cross validation
 from sklearn.model_selection import cross_val_score
-accuracies = cross_val_score(estimator = classifier, X = X_train, y= y_train, cv = 10) #cv parameter is the number of folds we need to splitt the data
+accuracies = cross_val_score(estimator = classifier, X = X_train, y= y_train, cv = 10) #cv parameter is the number of folds to split the data
 m= accuracies.mean()
 print(m)
 s= accuracies.std()
