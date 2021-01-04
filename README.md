@@ -22,7 +22,11 @@ An implemetation was even done with a deep learning algorithm; Artificial Neural
 
 The source code used in simultaneous event detection is available as simultaneous_event_detection.py which contains all the five classifier models and the deep learning algorithm. By uncommenting the relevant model the code can be run seperately for each of the classifier models needed.
 
-A real time implementation was also done with all these models in the Raspberry Pi and the code used is available as inference.py. In case of real time testing however, the model learning cannot be done in the Raspberry Pi itself. Hence the learning is done in a machine with a high processing power and the models along with the data pre-prepeartion objects are saved to the disk and later these saved models are loaded to the Raspberry Pi to do the real time testing. This function of saving the models to the disk is facilitated in all three source codes for machine learning models; ANN.py, other_classifiers.py and simultaneous_event_detection.py.
+A real time implementation was also done with all these models in the Raspberry Pi and the code used is available as inference.py. In case of real time testing however, the model learning cannot be done in the Raspberry Pi itself. Hence the learning is done in a machine with a high processing power and the models along with the data pre-prepeartion objects are saved to the disk and later these saved models are loaded to the Raspberry Pi to do the real time testing. This function of saving the models to the disk is facilitated in all three source codes for machine learning models; ANN.py, other_classifiers.py and simultaneous_event_detection.py. 
+
+For ANN, keras library was used in saving and loading models while for other models pickle framework from Scikit-learn was used. For all the six algorithms, data pre-processing objects were saved and loaded using pickle framwork of Scikit-learn library.
+
+It is however important to make note of the architecture of the model development environment (Machine used in learning of the models) used in saving the models of the 5 classifier models. Because Scikit-learn library is used in model development in these cases, it is neccessary that the model deployment environment (RPi) to have the same architecture to successfully load and do real time testing with these models. Such an issue won't be there with Keras.
 
 An example of a such saved data pre-prepeartion model used for ANN is avaialble as scaleANN.pkl and an example of a saved model is given as best_model_ANN.h5
 
