@@ -16,6 +16,7 @@ These collceted datasets are the input to machine learning system. Models were d
    - K- Nearest Neighbors Algorithm
    - Kernel SVM Algorithm
    - Naive Bayes Algorithm
+   
 for which the source code is available as other_classifiers.py. By uncommenting the relevant model's classifier parameters the program could be run for each othese models seperately.
 
 An implemetation was even done with a deep learning algorithm; Artificial Neural Networks for which the code is available as ANN.py
