@@ -1,4 +1,4 @@
-# Merbli
+# Multiple event detection using minumum inputs
 Multiple event detection using minimum inputs
 
 Implementation is based on the paper : G. Laput, Y. Zhang, and C. Harrison, “Synthetic Sensors: Towards General-Purpose Sensing", May 2017
